@@ -1,9 +1,9 @@
 #ifndef __FUNCTION_H_INCLUDED__
 #define __FUNCTION_H_INCLUDED__
 
-#include <math.h>
 #include <gsl/gsl_matrix.h>
 #include <vector>
+#include <math.h>
 
 const double pi=acos(-1.0);
 

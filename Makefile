@@ -42,7 +42,7 @@ SRCS = src/*
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
-EXEC = minametropolis
+EXEC = minimatropolis
 
 #
 # The following part of the makefile is generic; it can be used to 
