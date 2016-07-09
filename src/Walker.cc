@@ -39,14 +39,15 @@ int Walker::jump(std::vector<double>* x)
 {
 	std::vector<double> xp(dim_parspace,0);
 	jump_proposal(&xp,&xt);
+	bool accept;
 	
 	if (climb)
 	{
-		bool accept=jump_climb(&xp,&xt);
+		accept=jump_climb(&xp,&xt);
 	}
 	else
 	{
-		bool accept=jump_acceptor(&xp,&xt);
+		accept=jump_acceptor(&xp,&xt);
 	}
 	if (accept)
 	{

@@ -1,6 +1,8 @@
 #include <gsl/gsl_matrix.h>
 #include <vector>
+#include <iostream>
 #include "Function.h"
+#include "Walker.h"
 
 //const double pi=acos(-1.0);
 
@@ -61,6 +63,36 @@ double Q(gsl_vector* phi, gsl_vector* lambda, gsl_vector* sigma, gsl_matrix* eta
 
 	return 0.5*(T1+T2+T3+T4);
 }
+
+double acc_pdf(std::vector<double>* sigma, std::vector<double>* params) 
+{ 
+    //FIXME send pdf params as params 
+    std::vector<double> pdf_params(3,1); 
+    pdf_params[0]=0; 
+    int nsteps=1000; 
+ 
+    Walker texas_ranger(1,gaussian,&pdf_params,(*sigma)[0],false); 
+    std::vector<double> x(1,0); 
+    texas_ranger.initialize_position(&x); 
+ 
+    int n_acc=0; 
+    int step; 
+    for (step=0; step<nsteps; step++) 
+    { 
+        n_acc+=texas_ranger.jump(&x); 
+    } 
+ 
+    double acc_ratio = ((double)n_acc)/((double)nsteps); 
+ 
+    std::cout << "SIGMA: " << (*sigma)[0] <<std::endl; 
+    std::cout << "ACC RATIO: " << acc_ratio <<std::endl; 
+ 
+    double acc_diff = fabs(acc_ratio-(*params)[0]); 
+ 
+    return 1/acc_diff; 
+} 
+
+
 
 double gaussian(std::vector<double>* x, std::vector<double>* params)
 {
