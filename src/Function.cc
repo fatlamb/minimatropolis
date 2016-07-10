@@ -100,3 +100,36 @@ double gaussian(std::vector<double>* x, std::vector<double>* params)
 }
 
 
+double q_integrand(std::vector<double>* x, std::vector<double>* params)
+{
+	double nu,sig0,sig1,kap;
+	nu=(*params)[0];
+	sig0=(*params)[1];
+	sig1=(*params)[2];
+	kap=(*params)[3];
+
+	double lamsum = std::accumulate(x->begin(),x->begin()+3,0);
+	double lamsqsum = std::inner_product(x->begin(),x->begin()+3,x->begin(),0);
+	std::vector<double> sqeta(3,0);
+	unsigned int i;
+	for (i=0; i<3; i++)
+	{
+		sqeta[i]=pow((*x)[i+3],2);
+	}
+
+	double sqetasum = std::accumulate(sqeta.begin(),sqeta.end(),0);
+	double lamsqeta_sum = std::inner_product(sqeta.begin(),sqeta.end(),x->begin(),0);	
+
+	double Q=0;
+
+	Q += 0.5*pow(nu,2);
+	Q += (3.0/(2.0*pow(sig1,2)))*squetasum;
+	Q += ((5*pow(sig0,2))/(4*pow(kap,2)*pow(sig1,4))) * ( 3*(lamsqsum - (2/(nu*sig0))*lamsqeta_sum + pow((sqetasum/(nu*sig0)),2));
+		- pow(lamsum - (1/(nu*sig0))*sqetasum,2));	
+	Q += ((pow(sig0,2))/(2*(pow(kap,2)-1)*pow(sig1,4))) * pow( ((nu*pow(sig1,2))/sig0) + lamsum - (1/(nu*sig0))*sqetasum, 2);
+	Q += (-1.0)*((pow(sig0,2))/(pow(kap,2)*pow(sig1,4)))*(((nu*pow(sig1,2))/sig0) + lamsum + (1/(nu*sig0))*sqetasum); 
+
+	double detfac = ((*x)[0]-(*x)[1])*((*x)[0]-(*x)[2])* ((*x)[1]-(*x)[2])*(*x)[0]*(*x)[1]*(*x)[2];
+
+	return detfac*exp((-1.0)*Q);
+
